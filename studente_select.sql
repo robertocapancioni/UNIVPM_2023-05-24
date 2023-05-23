@@ -7,15 +7,17 @@ round(avg(voto) over(order by data),2) media_voti_progressiva
  order by materia_des;
  
 -- Numero Esami - torta 
+-- Esami Fatti
 select 'Esami Fatti' etichetta, count(distinct materia) valore
- from uni_esame_vw a
+ from unv_esame_vw a
  where stato_esame='PASSATO'
    and studente_id = :P24_ID
 
+-- Esami da Fare
 select 'Esami da Fare'etichetta,count(distinct m.id)valore 
-  from uni_materia m
-  join uni_studente s on m.laurea_id = s.laurea_id
- where m.id not in (select e.materia_id from uni_esame_vw e where s.id = e.studente_id and e.stato_esame='PASSATO')  
+  from unv_materia m
+  join unv_studente s on m.laurea_id = s.laurea_id
+ where m.id not in (select e.materia_id from unv_esame_vw e where s.id = e.studente_id and e.stato_esame='PASSATO')  
    and s.id=:P24_ID
    
 -- Badge List   
@@ -24,7 +26,7 @@ select count(distinct materia) numero_esami,
         nvl(round(avg(voto),2),0) media_voti,
         nvl(min(voto),0)voto_minimo,
         nvl(max(voto),0)voto_massimo
- from uni_esame_vw a
+ from unv_esame_vw a
  where stato_esame='PASSATO'
    and studente_id = :P24_ID
 
@@ -43,7 +45,7 @@ select count(distinct materia) numero_esami,
        decode(stato_esame,'PASSATO','fa fa-smile-o','NON PASSATO','fa fa-frown-o','fa fa-question-circle-o') event_icon,
        decode(stato_esame,'PASSATO','u-success','NON PASSATO','u-danger','u-info') user_color,
        stato_esame event_type
-  from uni_esame_vw
+  from unv_esame_vw
  where studente_id = :P24_ID
  order by data desc, materia_des
  
@@ -57,8 +59,7 @@ select a.ID,
        a.MATERIA,
        a.MATERIA_DES,
        a.ANNO
-  from UNI_APPELLO_VW a
-  join uni_studente s on a.laurea_id = s.laurea_id
-  and a.MATERIA_ID not in (select e.materia_id from uni_esame_vw e where s.id = e.studente_id and e.stato_esame='PASSATO')  
+  from UNV_APPELLO_VW a
+  join unv_studente s on a.laurea_id = s.laurea_id
+  and a.MATERIA_ID not in (select e.materia_id from unv_esame_vw e where s.id = e.studente_id and e.stato_esame='PASSATO')  
   where s.id = :P24_ID
-
