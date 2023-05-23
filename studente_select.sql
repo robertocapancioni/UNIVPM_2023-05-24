@@ -1,3 +1,4 @@
+Elenco Esami Fatti - combinato
 select to_char(data,'yy-mm-dd')||'-'||materia_des materia,voto,
 round(avg(voto) over(order by data),2) media_voti_progressiva
  from unv_esame_vw a
@@ -5,7 +6,7 @@ round(avg(voto) over(order by data),2) media_voti_progressiva
    and studente_id = :P24_ID
  order by materia_des;
  
--- torta 
+-- Numero Esami - torta 
 select 'Esami Fatti' etichetta, count(distinct materia) valore
  from uni_esame_vw a
  where stato_esame='PASSATO'
@@ -17,7 +18,7 @@ select 'Esami da Fare'etichetta,count(distinct m.id)valore
  where m.id not in (select e.materia_id from uni_esame_vw e where s.id = e.studente_id and e.stato_esame='PASSATO')  
    and s.id=:P24_ID
    
--- badge list   
+-- Badge List   
 select count(distinct materia) numero_esami,
        nvl(sum(crediti),0)CFU,
         nvl(round(avg(voto),2),0) media_voti,
@@ -27,7 +28,7 @@ select count(distinct materia) numero_esami,
  where stato_esame='PASSATO'
    and studente_id = :P24_ID
 
---lista esami timeline
+--Lista Esami - timeline
  select id,
        'Cod. Esame: '||esame user_name,
        appello,
@@ -46,6 +47,7 @@ select count(distinct materia) numero_esami,
  where studente_id = :P24_ID
  order by data desc, materia_des
  
+-- Appelli - classic
 select a.ID,
        a.APPELLO,
        a.DATA,
